@@ -5,24 +5,24 @@ Example: A company makes a duck simulation game. The initial designers of the sy
 
 ```mermaid
 classDiagram
-  Superclass_Duck <|-- Subclass_MallardDuck
-  Superclass_Duck <|-- Subclass_RedheadDuck
-  Superclass_Duck <|-- Subclass_OtherDucksEtc
-  class Superclass_Duck {
+  Duck <|-- MallardDuck
+  Duck <|-- RedheadDuck
+  Duck <|-- OtherDucksEtc
+  class Duck {
     ...
     quack()
     swim()
     display()
   }
-  class Subclass_MallardDuck{
+  class MallardDuck{
     ...
     display()
   }
-  class Subclass_RedheadDuck{
+  class RedheadDuck{
     ...
     display()
   }
-  class Subclass_OtherDucksEtc{
+  class OtherDucksEtc{
     ...
     display()
   }
@@ -35,25 +35,25 @@ If we add a fly() method in the Duck class and then all the ducks will inherit i
 
 ```mermaid
 classDiagram
-  Superclass_Duck <|-- Subclass_MallardDuck
-  Superclass_Duck <|-- Subclass_RedheadDuck
-  Superclass_Duck <|-- Subclass_RubberDuck
-  class Superclass_Duck {
+  Duck <|-- MallardDuck
+  Duck <|-- RedheadDuck
+  Duck <|-- RubberDuck
+  class Duck {
     ...
     quack()
     swim()
     display()
     fly()
   }
-  class Subclass_MallardDuck{
+  class MallardDuck{
     ...
     display()
   }
-  class Subclass_RedheadDuck{
+  class RedheadDuck{
     ...
     display()
   }
-  class Subclass_RubberDuck{
+  class RubberDuck{
     ...
     quack()
     display()
@@ -69,55 +69,57 @@ If we take the fly() method out of the Duck superclass, and make a Flyable() int
 
 ```mermaid
 classDiagram
-  Superclass_Duck <|-- Subclass_MallardDuck
-  Superclass_Duck <|-- Subclass_RedheadDuck
-  Superclass_Duck <|-- Subclass_RubberDuck
-  Superclass_Duck <|-- Subclass_DecoyDuck
+  Duck <|-- MallardDuck
+  Duck <|-- RedheadDuck
+  Duck <|-- RubberDuck
+  Duck <|-- DecoyDuck
 
-  class Superclass_Duck {
+  class Duck {
     ...
     swim()
     display()
   }
 
-  Interface_Flyable <|.. Subclass_MallardDuck
-  Interface_Flyable <|.. Subclass_RedheadDuck
+  Flyable <|.. MallardDuck
+  Flyable <|.. RedheadDuck
 
-  class Interface_Flyable {
+  class Flyable {
+    <<interface>> 
     ...
     fly()
   }
 
-  Interface_Quackable <|.. Subclass_MallardDuck
-  Interface_Quackable <|.. Subclass_RedheadDuck
-  Interface_Quackable <|.. Subclass_RubberDuck
+  Quackable <|.. MallardDuck
+  Quackable <|.. RedheadDuck
+  Quackable <|.. RubberDuck
 
-  class Interface_Quackable {
+  class Quackable {
+    <<interface>> 
     ...
     quack()
   }
   
-  class Subclass_MallardDuck{
+  class MallardDuck{
     ...
     display()
     fly()
     quack()
   }
 
-  class Subclass_RedheadDuck{
+  class RedheadDuck{
     ...
     display()
     fly()
     quack()
   }
 
-  class Subclass_RubberDuck{
+  class RubberDuck{
     ...
     display()
     quack()
   }
 
-  class Subclass_DecoyDuck{
+  class DecoyDuck{
     ...
     display()
   }
@@ -143,28 +145,113 @@ We know that fly() and quack() are the parts of the Duck class that vary across 
 ## Another Design Principle
 For flexibility, we should have behavior setter methods in the Duck classes so that we can change the MallardDuck’s flying behavior dynamically at runtime. But in the first two solutions, a behavior came either from a concrete implementation in the superclass Duck, or from a concrete implementation in the subclass itself - we were relying on an implementation, which doesn't allow for changes. 
 
-**Design Principle 2**: Program to an interface, not an implementation. 
+**Design Principle 2**: Program to an interface (interface here means supertype, could be Java abstract class or Java interface), not an implementation. 
 
 We’ll use an `interface` to represent each `behavior`. For instance, FlyBehavior and QuackBehavior, and each `implementation of a behavior` will implement one of those interfaces. We’ll make a set of classes whose entire reason for living is to `represent a behavior` (for example, “squeaking”), and it’s the `behavior class`, rather than the Duck class, that will `implement the behavior interface`. With our new design, the duck subclasses will use `a behavior represented by an interface` (FlyBehavior and QuackBehavior), so that the `actual implementation of the behavior` won’t be `locked` into the duck subclass.
 
 Here, the fly() in the class FlyWithWings will implement duck flying, while the fly() in the class FlyNoWay will do nothing. 
 ```mermaid
 classDiagram
-  Interface_FlyBehavior <|.. Class_FlyWithWings
-  Interface_FlyBehavior <|.. Class_FlyNoWay
-  class Interface_FlyBehavior {
+  FlyBehavior <|.. FlyWithWings
+  FlyBehavior <|.. FlyNoWay
+  class FlyBehavior {
+    <<interface>> 
     ...
     fly()
   }
-  class Class_FlyWithWings{
+  class FlyWithWings{
     ...
     fly()
   }
-  class Class_FlyNoWay{
+  class FlyNoWay{
     ...
     fly()
   }
 ```
+
+Do the same to QuackBehavior: 
+
+```mermaid
+classDiagram
+  QuackBehavior <|.. Quack
+  QuackBehavior <|.. Squeak
+  QuackBehavior <|.. MuteQuack
+
+  class QuackBehavior {
+    <<interface>> 
+    ...
+    quack()
+  }
+  class Quack{
+    ...
+    quack()
+  }
+  class Squeak{
+    ...
+    quack()
+  }
+  class MuteQuack{
+    ...
+    quack()
+  }
+```
+
+With this design, other objects can `reuse` fly and quack behaviors because they are taken out of the Duck classes. And we can `add new behaviors without` modifying existing behavior classes or the Duck classes that use flying behaviors.
+
+Note: 
+- The principles and patterns can be applied at any stage of the development lifecycle.
+- Even a behavior can still have state and methods; a flying behavior might have instance variables representing the attributes for the flying (wing beats per minute, max altitude, speed, etc.) behavior.
+
+## Integrating the Duck behaviors
+Add two instance vars that are of behavior interface type. To perform the quack, a Duck just asks the object that is referenced by quackBehavior to quack for it. We don’t care who inherits Duck, all we care about is that it knows how to quack(). 
+
+```mermaid
+classDiagram
+  class Duck {
+    FlyBehavior flyBehavior
+    QuackBehavior quackBehavior
+    performFly()
+    performQuack()
+    swim()
+    display()
+  }
+```
+
+```java
+public abstract class Duck {
+  QuackBehavior quackBehavior; 
+  // more
+  public void performQuack() { 
+    quackBehavior.quack(); 
+  }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
