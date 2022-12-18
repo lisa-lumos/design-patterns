@@ -227,8 +227,28 @@ public abstract class Duck {
 }
 ```
 
+How the flyBehavior and quackBehavior instance variables are set for the MallardDuck class:
+```java
+public class MallardDuck extends Duck {
+  public MallardDuck() { 
+    quackBehavior = new Quack(); // a concrete implementation class of quackBehavior interface
+    flyBehavior = new FlyWithWings(); // a concrete implementation class of FlyBehavior interface
+  }
+  public void display() { 
+    System.out.println("I'm a real Mallard duck"); 
+  }
+}
+```
+Previously, we said that we should NOT program to an implementation. We will fix it later with other patterns. Note that compared with before, we could easily change the behavior at runtime, by adding a setter method in the Duck class: 
+```java
+public void setFlyBehavior(FlyBehavior fb) { 
+  flyBehavior = fb; 
+}
 
-
+public void setQuackBehavior(QuackBehavior qb) { 
+  quackBehavior = qb; 
+}
+```
 
 
 
