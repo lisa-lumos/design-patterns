@@ -135,7 +135,7 @@ It would be great if we can build software in a way so that when we need to chan
 In either case, whenever you need to modify a behavior, you have to track down and change it in all the different subclasses where that behavior is defined, probably introducing new bugs along the way. 
 
 ## Design Principle for this situation
-**Design Principle 1**: From your application, identify `the aspects that vary` and `separate` them from `these that doesn't vary`. Take what varies and “encapsulate” it so it won’t affect those who won't change => Fewer code changes and hence bugs, and more flexibility in your systems. 
+**Design Principle #1**: From your application, identify `the aspects that vary` and `separate` them from `these that doesn't vary`. Take what varies and “encapsulate” it so it won’t affect those who won't change => Fewer code changes and hence bugs, and more flexibility in your systems. 
 
 This concept forms the basis for almost every design pattern - they all provide a way to let some part of a system vary independently of all other parts.
 
@@ -145,7 +145,7 @@ We know that fly() and quack() are the parts of the Duck class that vary across 
 ## Another Design Principle
 For flexibility, we should have behavior setter methods in the Duck classes so that we can change the MallardDuck’s flying behavior dynamically at runtime. But in the first two solutions, a behavior came either from a concrete implementation in the superclass Duck, or from a concrete implementation in the subclass itself - we were relying on an implementation, which doesn't allow for changes. 
 
-**Design Principle 2**: Program to an interface (interface here means supertype, could be Java abstract class or Java interface), not an implementation. 
+**Design Principle #2**: Program to an interface (interface here means supertype, could be Java abstract class or Java interface), not an implementation. 
 
 We’ll use an `interface` to represent each `behavior`. For instance, FlyBehavior and QuackBehavior, and each `implementation of a behavior` will implement one of those interfaces. We’ll make a set of classes whose entire reason for living is to `represent a behavior` (for example, “squeaking”), and it’s the `behavior class`, rather than the Duck class, that will `implement the behavior interface`. With our new design, the duck subclasses will use `a behavior represented by an interface` (FlyBehavior and QuackBehavior), so that the `actual implementation of the behavior` won’t be `locked` into the duck subclass.
 
@@ -239,7 +239,7 @@ public class MallardDuck extends Duck {
   }
 }
 ```
-Previously, we said that we should NOT program to an implementation. We will fix it later with other patterns. Note that compared with before, we could easily change the behavior at runtime, by adding a setter method in the Duck class: 
+Previously, we said that we should NOT program to an implementation. We will fix it later with other patterns. Note that compared with before, we could change the behavior at runtime, by adding a setter method in the Duck class: 
 ```java
 public void setFlyBehavior(FlyBehavior fb) { 
   flyBehavior = fb; 
@@ -250,6 +250,18 @@ public void setQuackBehavior(QuackBehavior qb) {
 }
 ```
 
+### The final class diagram
+<img src="imgs/1-strategy-pattern-diagram.png">
+
+
+## The Big picture on encapsulated behaviors
+Instead of thinking of the duck behaviors as a set of behaviors, we should think of them as a family of algorithm that represent things a duck would do (different ways of quacking or flying), but we can do the same for a set of classes that implement the ways to compute state sales tax by different states.
+
+Each duck has a FlyBehavior and a QuackBehavior. Using composition, you put two classes together (instead of inheriting their behavior, the ducks get their behavior by being composed with the right behavior object). 
+
+**Design Principle #3**: Favor composition over inheritance. (better flexibility, and allow for changing behavior at runtime)
+
+**Design Pattern #1: the Strategy Pattern**: The Strategy Pattern defines a family of algorithms, encapsulates each one, and makes them interchangeable. Strategy lets the algorithm vary independently from clients that use it. 
 
 
 
