@@ -263,11 +263,14 @@ Each duck has a FlyBehavior and a QuackBehavior. Using composition, you put two 
 
 **Design Pattern #1: the Strategy Pattern**: The Strategy Pattern defines a family of algorithms, encapsulates each one, and makes them interchangeable. Strategy lets the algorithm vary independently from clients that use it. 
 
+## About Design Patterns and Design Principles
+Design Patterns give you a shared vocabulary with other developers, so you can more easily communicate with other them. It also let you think at the pattern level (architectures), instead of at the object level. For example, "We are using the Strategy Pattern to implement the various behaviors of our ducks. "
 
+Design patterns don’t go directly into your code, they first go into your BRAIN. Once you’ve loaded your brain with a good working knowledge of patterns, you can then start to apply them to your new designs, and rework your old code when you find it’s degrading into an inflexible mess.
 
+Design is an art. There will always be tradeoffs. But, if you follow the time-tested design patterns, you’ll be way ahead. Knowing concepts like abstraction, inheritance, and polymorphism does not make you a good object-oriented designer. A design guru thinks about how to create flexible designs that are `maintainable and can cope with change`.
 
-
-
+One of the keys to creating maintainable OO systems is thinking about how they might change in the future, and OO principles that underlie the design patterns address those issues.
 
 
 
