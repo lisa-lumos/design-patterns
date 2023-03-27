@@ -10,18 +10,58 @@ We expect, if the Weather Station is successful, there will be more than three d
 ## Publishers + Subscribers = Observer Pattern
 We call the publisher the Subject, and the subscribers the Observers. 
 
+`The Observer Pattern` defines a one-to-many dependency between objects so that when one object changes state, all of its dependents are notified and updated automatically.
+
+## The Observer Pattern: the class diagram
+```mermaid
+classDiagram
+  Subject <|.. ConcreteSubject
+  %% ConcreteSubject <|-- ConcreteObserver : subject
+  Observer <|.. ConcreteObserver
+  %% Observer <|-- Subject : observers
 
 
+  class Observer {
+    <<interface>> 
+    ...
+    update()
+  }
 
+  class Subject {
+    <<interface>> 
+    ...
+    registerObserver()
+    removeObserver() 
+    notifyObservers()
+  }
+  
+  class ConcreteSubject{
+    ...
+    registerObserver()
+    removeObserver() 
+    notifyObservers()
 
+    getState()
+    setState()
+  }
 
+  class ConcreteObserver{
+    ...
+    update()
+  }
 
+```
 
+Each subject can have many observers. The observers use the state in the subjects, even if they don't own it, this. 
 
+When two objects are loosely coupled, they can interact, but they typically have very little knowledge of each other. This gives us a lot of flexibility. The Observer Pattern is a great example of `loose coupling`. 
+- the only thing the subject knows about an observer is that it implements a certain interface (the Observer interface).
+- We can add new observers at any time.
+- We never need to modify the subject to add new types of observers.
+- We can reuse subjects or observers independently of each other. ???
+- Changes to either the subject or an observer will not affect the other.
 
-
-
-
+**Design Principle #4**: Strive for loosely coupled designs between objects that interact.
 
 
 
