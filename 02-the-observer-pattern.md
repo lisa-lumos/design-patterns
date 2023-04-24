@@ -10,7 +10,7 @@ We expect, if the Weather Station is successful, there will be more than three d
 ## Publishers + Subscribers = Observer Pattern
 We call the publisher the Subject, and the subscribers the Observers. 
 
-`The Observer Pattern` defines a one-to-many dependency between objects so that when one object changes state, all of its dependents are notified and updated automatically.
+`The Observer Pattern` defines a one-to-many dependency between objects so that when one object changes state, all of its dependents are notified and updated automatically. It is related to the Publish/Subscribe Pattern, which is for more complex situations with multiple Subjects and/or multiple message types.
 
 ## The Observer Pattern: the class diagram
 ```mermaid
@@ -121,91 +121,142 @@ classDiagram
 ## Implementing the Weather station
 ```java
 public interface Subject { 
-    public void registerObserver(Observer o); 
-    public void removeObserver(Observer o); 
-    public void notifyObservers(); 
+  public void registerObserver(Observer o); 
+  public void removeObserver(Observer o); 
+  public void notifyObservers(); 
 }
 
 public interface Observer { 
-    public void update(float temp, float humidity, float pressure); 
+  public void update(float temp, float humidity, float pressure); 
 }
 
 public interface DisplayElement {
-    public void display();
+  public void display();
 }
 
 public class WeatherData implements Subject { 
-    private List<Observer> observers; 
-    private float temperature; 
-    private float humidity; 
-    private float pressure;
+  private List<Observer> observers; 
+  private float temperature; 
+  private float humidity; 
+  private float pressure;
 
-    public WeatherData() { 
-        observers = new ArrayList<Observer>(); 
-    }
+  public WeatherData() { 
+    observers = new ArrayList<Observer>(); 
+  }
 
-    public void registerObserver(Observer o) { 
-        observers.add(o); 
-    }
+  public void registerObserver(Observer o) { 
+    observers.add(o); 
+  }
 
-    public void removeObserver(Observer o) { 
-        observers.remove(o); 
-    }
+  public void removeObserver(Observer o) { 
+    observers.remove(o); 
+  }
 
-    public void notifyObservers() { 
-        for (Observer observer : observers) { 
-            observer.update(temperature, humidity, pressure); 
-        } 
-    }
+  public void notifyObservers() { 
+    for (Observer observer : observers) { 
+      observer.update(temperature, humidity, pressure); 
+    } 
+  }
 
-    public void measurementsChanged() { 
-        notifyObservers(); 
-    }
+  public void measurementsChanged() { 
+    notifyObservers(); 
+  }
 
-    public void setMeasurements(float temperature, float humidity, float pressure) {
-        this.temperature = temperature; 
-        this.humidity = humidity; 
-        this.pressure = pressure; 
-        measurementsChanged(); 
-    }
-    // other WeatherData methods here
+  public void setMeasurements(float temperature, float humidity, float pressure) {
+    this.temperature = temperature; 
+    this.humidity = humidity; 
+    this.pressure = pressure; 
+    measurementsChanged(); 
+  }
+  // other WeatherData methods here
 }
 
 public class CurrentConditionsDisplay implements Observer, DisplayElement { 
-    private float temperature; 
-    private float humidity; 
-    private WeatherData weatherData; // can later be used for un-register
+  private float temperature; 
+  private float humidity; 
+  private WeatherData weatherData; // can later be used for un-register
 
-    public CurrentConditionsDisplay(WeatherData weatherData) { 
-        this.weatherData = weatherData; 
-        weatherData.registerObserver(this); 
-    }
+  public CurrentConditionsDisplay(WeatherData weatherData) { 
+    this.weatherData = weatherData; 
+    weatherData.registerObserver(this); 
+  }
 
-    public void update(float temperature, float humidity, float pressure) { 
-        this.temperature = temperature; 
-        this.humidity = humidity; 
-        display(); 
-    }
+  public void update(float temperature, float humidity, float pressure) { 
+    this.temperature = temperature; 
+    this.humidity = humidity; 
+    display(); 
+  }
 
-    public void display() { 
-        System.out.println("Current conditions: " + temperature + "F degrees and " + humidity + "% humidity"); 
-    }
+  public void display() { 
+    System.out.println("Current conditions: " + temperature + "F degrees and " + humidity + "% humidity"); 
+  }
 }
 
 public class WeatherStation {
-    public static void main(String[] args) { 
-        WeatherData weatherData = new WeatherData();
+  public static void main(String[] args) { 
+    WeatherData weatherData = new WeatherData();
 
-        CurrentConditionsDisplay currentDisplay = new CurrentConditionsDisplay(weatherData); 
-        StatisticsDisplay statisticsDisplay = new StatisticsDisplay(weatherData); 
-        ForecastDisplay forecastDisplay = new ForecastDisplay(weatherData);
+    CurrentConditionsDisplay currentDisplay = new CurrentConditionsDisplay(weatherData); 
+    StatisticsDisplay statisticsDisplay = new StatisticsDisplay(weatherData); 
+    ForecastDisplay forecastDisplay = new ForecastDisplay(weatherData);
 
-        weatherData.setMeasurements(80, 65, 30.4f); 
-        weatherData.setMeasurements(82, 70, 29.2f); 
-        weatherData.setMeasurements(78, 90, 29.2f);
-    }
+    weatherData.setMeasurements(80, 65, 30.4f); 
+    weatherData.setMeasurements(82, 70, 29.2f); 
+    weatherData.setMeasurements(78, 90, 29.2f);
+  }
 }
 ```
+
+The Observer Pattern is one of the most commonly used patterns, and you will find many examples of it being used in libraries and frameworks. If we look at the Java Development Kit (JDK), both the JavaBeans and Swing libraries use the Observer Pattern. The pattern is not limited to Java either; it is used in JavaScript events and in Cocoa and Swift Key-Value Observing protocol, etc. 
+
+In our current Weather Station design, we are pushing all three pieces of data to the update() method in the displays, even if the displays don't need all these values. That's okay, but what if the weather app adds another data value later, like wind speed? Then we'll have to change all the update() methods in all the displays, even if most of them don't need or want the wind speed data. Whether we pull or push the data to the Observer is an implementation detail, but in many cases it makes sense to let Observers retrieve the data they need, rather than passing more and more data to them through the update() method.
+
+Updating the Weather Station code to allow Observers to pull the data they need is straightforward. We just need to make sure the Subject has getter methods for its data, and then change Observers to use them to pull the data that's appropriate for their needs. 
+```java
+public void notifyObservers() { // modify this method in WeatherData class
+  for (Observer observer : observers) { 
+    observer.update();
+  } 
+}
+
+public interface Observer { 
+  public void update(); // change update() to have no params
+}
+
+public void update() { // for the CurrentConditionsDisplay class. each class has diff update() implementations
+  this.temperature = weatherData.getTemperature(); 
+  this.humidity = weatherData.getHumidity(); 
+  display(); 
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
