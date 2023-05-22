@@ -27,12 +27,82 @@ About decorators:
 - Objects can be decorated at any time, so we can decorate objects dynamically at runtime with as many decorators as we like.
 
 ## The Decorator Pattern
+The Decorator Pattern attaches additional responsibilities to an object dynamically. Decorators provide a flexible alternative to subclassing for extending functionality.
 
+```mermaid
+classDiagram
+  Beverage <|.. DarkRoast
+  Beverage <|.. HouseBlend
+  Beverage <|.. Espresso
+  Beverage <|.. Decaf
+  Beverage <|.. CondimentDecorator
 
+  CondimentDecorator <|.. Milk
+  CondimentDecorator <|.. Mocha
+  CondimentDecorator <|.. Soy
+  CondimentDecorator <|.. Whip
 
+  class Beverage {
+    <<interface>> 
+    description
+    getDescription()
+    cost()
+  }
+  
+  class DarkRoast{
+    ...
+    cost()
+  }
 
+  class HouseBlend{
+    ...
+    cost()
+  }
 
+  class Espresso{
+    ...
+    cost()
+  }
 
+  class Decaf{
+    ...
+    cost()
+  }
+
+  class CondimentDecorator{
+    <<interface>> 
+    Beverage beverage
+    getDescription()
+  }
+
+  class Milk{
+    ...
+    cost()
+    getDescription()
+  }
+
+  class Mocha{
+    ...
+    cost()
+    getDescription()
+  }
+
+  class Soy{
+    ...
+    cost()
+    getDescription()
+  }
+
+  class Whip{
+    ...
+    cost()
+    getDescription()
+  }
+```
+
+Note that we are subclassing the abstract class Beverage in order to have the correct type, not to inherit its behavior. The behavior comes in through the composition of decorators with the base components as well as other decorators.
+
+With composition, we can mix and match decorators any way we like, at runtime.
 
 
 
