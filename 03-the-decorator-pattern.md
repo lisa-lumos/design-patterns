@@ -104,40 +104,84 @@ Note that we are subclassing the abstract class Beverage in order to have the co
 
 With composition, we can mix and match decorators any way we like, at runtime.
 
+## The code
+```java
+// the Beverage abstract class
+public abstract class Beverage { 
+  String description = "Unknown Beverage";
+  public String getDescription() { 
+    return description; 
+  }
+  public abstract double cost();
+}
 
+// the Condiments abstract class
+public abstract class CondimentDecorator extends Beverage { 
+  Beverage beverage; // it holds a Beverage object as instance var
+  public abstract String getDescription(); 
+}
 
+// a beverage concrete class: Espresso
+public class Espresso extends Beverage {
+  public Espresso() { 
+    description = "Espresso"; 
+  }
+  public double cost() { 
+    return 1.99; 
+  }
+}
 
+// a beverage concrete class: HouseBlend
+public class HouseBlend extends Beverage {
+  public HouseBlend() { 
+    description = "House Blend Coffee"; 
+  }
+  public double cost() { 
+    return .89; 
+  }
+}
 
+// a condiment concrete class Mocha
+public class Mocha extends CondimentDecorator {
+  public Mocha(Beverage beverage) { 
+    this.beverage = beverage; 
+  }
+  public String getDescription() { 
+    return beverage.getDescription() + ", Mocha"; 
+  }
+  public double cost() { 
+    return beverage.cost() + .20; 
+  }
+}
 
+// test code to make orders
+public class StarbuzzCoffee {
+  public static void main(String args[]) {
+    // beverage1 is just an espresso
+    Beverage beverage1 = new Espresso(); 
+    System.out.println(beverage1.getDescription() + " $" + beverage1.cost());
 
+    // beverage2 is a double mocha DarkRoast with whip
+    Beverage beverage2 = new DarkRoast(); 
+    beverage2 = new Mocha(beverage2); // wrap it with a mocha
+    beverage2 = new Mocha(beverage2); 
+    beverage2 = new Whip(beverage2); 
+    System.out.println(beverage2.getDescription() + " $" + beverage2.cost());
 
+    Beverage beverage3 = new HouseBlend(); 
+    beverage3 = new Soy(beverage3); 
+    beverage3 = new Mocha(beverage3); 
+    beverage3 = new Whip(beverage3); 
+    System.out.println(beverage3.getDescription() + " $" + beverage3.cost());
+  }
+}
+```
 
+## Real-world decorators
+The java.io package is largely based on Decorator.
 
+## Notes
+The decorator pattern can sometimes add a lot of small classes to a design, and this occasionally results in a design that is difficult for others to understand.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Introducing decorators can increase the complexity of the code needed to instantiate the component. Once you've got decorators, you've got to not only instantiate the component, but also wrap it with who knows how many decorators.
 
