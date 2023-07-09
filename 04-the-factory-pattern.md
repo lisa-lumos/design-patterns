@@ -77,16 +77,139 @@ What we are going to do is, make the PizzaStore class abstract, put createPizza(
 public abstract class PizzaStore {
   public Pizza orderPizza(String type) { // this part is fixed
     Pizza pizza;
-    pizza = createPizza(type);
+    pizza = createPizza(type); // calling its own createPizza()
     pizza.prepare(); 
     pizza.bake(); 
     pizza.cut(); 
     pizza.box();
     return pizza;
   }
-  abstract Pizza createPizza(String type); // this part is flexible
+
+  // let each subclass of Pizza Store define their createPizza(). This is the factory method
+  protected abstract Pizza createPizza(String type); // this part is flexible
 }
 ```
+
+In this way, we will have many concrete subclasses of Pizza Store, each with its own pizza variations, all fitting within the Pizza Store framework, and still making use of the well-tuned orderPizza() method.
+
+```mermaid
+classDiagram
+  PizzaStore <|-- NYStylePizzaStore
+  PizzaStore <|-- ChicagoStylePizzaStore
+
+  class PizzaStore {
+    <<abstract>> 
+    createPizza()
+    orderPizza()
+  }
+  
+  class NYStylePizzaStore {
+    createPizza()
+  }
+
+  class ChicagoStylePizzaStore {
+    createPizza()
+  }
+```
+
+Note that the orderPizza() method does many with a Pizza object (prepare/bake/cut/box), but because Pizza is abstract, orderPizza() has no idea what real concrete classes are involved. In other words, it's decoupled. 
+
+Concrete subclasses of Pizza Stores. Example of the New York regional style:
+```java
+public class NYPizzaStore extends PizzaStore {
+  Pizza createPizza(String item) {
+    if (item.equals("cheese")) { 
+      return new NYStyleCheesePizza(); 
+    } else if (item.equals("veggie")) {
+      return new NYStyleVeggiePizza(); 
+    } else if (item.equals("clam")) {
+      return new NYStyleClamPizza(); 
+    } else if (item.equals("pepperoni")) {
+      return new NYStylePepperoniPizza(); 
+    } else return null;
+  }
+}
+```
+
+With this, we've gone from having an object handle the instantiation of our concrete classes, to a set of subclasses taking that responsibility.
+
+`abstract Product factoryMethod(String type)`. A factory method handles object creation, and encapsulates/delegates it in a subclass. This decouples the client code in the superclass from the object creation code in the subclass.
+
+The abstract Pizza class:
+```java
+public abstract class Pizza {
+  String name; 
+  String dough; 
+  String sauce; 
+  List<String> toppings = new ArrayList<String>();
+
+  void prepare() { 
+    System.out.println("Preparing " + name); 
+    System.out.println("Tossing dough..."); 
+    System.out.println("Adding sauce..."); 
+    System.out.println("Adding toppings: "); 
+    for (String topping : toppings) { System.out.println(" " + topping); }
+  }
+
+  void bake() { 
+    System.out.println("Bake for 25 minutes at 350"); 
+  }
+
+  void cut() { 
+    System.out.println("Cutting the pizza into diagonal slices"); 
+  }
+
+  void box() { 
+    System.out.println("Place pizza in official PizzaStore box"); 
+  }
+
+  public String getName() { 
+    return name; 
+  }
+}
+```
+
+And a concrete NYStyleCheesePizza class:
+```java
+public class NYStyleCheesePizza extends Pizza {
+  public NYStyleCheesePizza() {
+    name = "NY Style Sauce and Cheese Pizza"; 
+    dough = "Thin Crust Dough"; 
+    sauce = "Marinara Sauce";
+    toppings.add("Grated Reggiano Cheese");
+  }
+}
+```
+
+A concrete ChicagoStyleCheesePizza class:
+```java
+public class ChicagoStyleCheesePizza extends Pizza {
+  public ChicagoStyleCheesePizza() {
+    name = "Chicago Style Deep Dish Cheese Pizza"; 
+    dough = "Extra Thick Crust Dough"; 
+    sauce = "Plum Tomato Sauce";
+    toppings.add("Shredded Mozzarella Cheese");
+  }
+  void cut() { 
+    System.out.println("Cutting the pizza into square slices"); 
+  }
+}
+```
+
+And the main:
+```java
+public class PizzaTestDrive {
+  public static void main(String[] args) {
+    PizzaStore nyStore = new NYPizzaStore(); 
+    PizzaStore chicagoStore = new ChicagoPizzaStore();
+    Pizza pizza = nyStore.orderPizza("cheese"); 
+    System.out.println("Ethan ordered a " + pizza.getName() + "\n");
+    pizza = chicagoStore.orderPizza("cheese"); 
+    System.out.println("Joel ordered a " + pizza.getName() + "\n");
+  }
+}
+```
+
 
 
 
