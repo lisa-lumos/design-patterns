@@ -74,7 +74,7 @@ But, what if you want to create a framework, that ties the store and the pizza c
 
 What we are going to do is, make the PizzaStore class abstract, put createPizza() method into PizzaStore, and make this method abstract. Then we can create a concrete PizzaStore subclass for each regional style:
 ```java
-public abstract class PizzaStore {
+public abstract class PizzaStore { // the Creator classes
   public Pizza orderPizza(String type) { // this part is fixed
     Pizza pizza;
     pizza = createPizza(type); // calling its own createPizza()
@@ -137,7 +137,7 @@ With this, we've gone from having an object handle the instantiation of our conc
 
 The abstract Pizza class:
 ```java
-public abstract class Pizza {
+public abstract class Pizza { // the Product classes
   String name; 
   String dough; 
   String sauce; 
@@ -210,13 +210,15 @@ public class PizzaTestDrive {
 }
 ```
 
+## Summary
+The Factory Method Pattern defines an interface for creating an object, but lets subclasses decide which class to instantiate. Factory Method lets a class defer instantiation to subclasses.
 
+Design principle 
+- Dependency Inversion Principle: Depend upon abstractions. Do not depend upon concrete classes.
 
+It suggests that our high-level components should not depend on our low-level components; rather, they should both depend on abstractions. PizzaStore is our high-level component, and the pizza implementations are our low-level components, so PizzaStore should not depend on the concrete pizza classes, instead, it should depend on the abstract Pizza class.
 
-
-
-
-
+After applying Factory Method, or high-level component, the PizzaStore, and our low-level components, the pizzas, both depend on Pizza, the abstraction.
 
 
 
