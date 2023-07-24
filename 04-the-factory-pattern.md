@@ -220,5 +220,151 @@ It suggests that our high-level components should not depend on our low-level co
 
 After applying Factory Method, or high-level component, the PizzaStore, and our low-level components, the pizzas, both depend on Pizza, the abstraction.
 
+The following guidelines can help you avoid OO designs, that violate the Dependency Inversion Principle:
+- No variable should hold a reference to a concrete class. Should not use "new ...". 
+- No class should derive from a concrete class. Should derive from an abstraction. 
+- No method should override an implemented method of any of its base classes. Base classes are meant to be shared by all your subclasses. 
+
+This is a guideline you should strive for, rather than a rule you should follow all the time.
+
+But, if you internalize these guidelines, and have them in the back of your mind when you design, you'll know when you are violating the principle, and you'll have a good reason for doing so. For instance, if you have a class that isn't likely to change, and you know it, then it's not the end of the world, if you instantiate a concrete class in your code. If, on the other hand, a class you write is likely to change, you have some good techniques, like Factory Method, to encapsulate that change.
+
+## How to make same type of stores use the same set of ingredients
+Next, assume we want to standardize the ingredients that all pizza stores - all three regions have different ingredient families, with each region implementing a complete family of ingredients.  
+
+Now we're going to build a factory to create our ingredients; the factory will be responsible for creating each ingredient in the ingredient family.
+
+An interface for the factory, that is going to create all our ingredients:
+```java
+public interface PizzaIngredientFactory {
+  public Dough createDough(); 
+  public Sauce createSauce(); 
+  public Cheese createCheese(); 
+  public Veggies[] createVeggies(); 
+  public Pepperoni createPepperoni(); 
+  public Clams createClam();
+}
+```
+
+Next, we will build a factory for each region, by creating a subclass of PizzaIngredientFactory, that implements each create method. We also implement a set of ingredient classes, to be used with the factory, like ReggianoCheese, RedPeppers, and ThickCrustDough. These classes can be shared among regions where appropriate.
+
+The implementation for the New York ingredient factory:
+```java
+public class NYPizzaIngredientFactory implements PizzaIngredientFactory {
+
+  public Dough createDough() { // the New York version
+    return new ThinCrustDough(); 
+  }
+
+  public Sauce createSauce() { // the New York version
+    return new MarinaraSauce(); 
+  }
+
+  public Cheese createCheese() { // the New York version
+    return new ReggianoCheese(); 
+  }
+
+  public Veggies[] createVeggies() { 
+    Veggies veggies[] = { new Garlic(), new Onion(), new Mushroom(), new RedPepper() }; 
+    return veggies; 
+  }
+
+  public Pepperoni createPepperoni() { // quality pepperoni, shared between New York and Chicago
+    return new SlicedPepperoni(); 
+  }
+
+  public Clams createClam() { // the New York version of fresh clams from the nearby coast, Chicago has to settle for frozen
+    return new FreshClams(); 
+  }
+}
+```
+
+The reworked Pizza class:
+```java
+public abstract class Pizza { 
+  // a set of ingredients used for it
+  String name;
+  Dough dough; 
+  Sauce sauce; 
+  Veggies veggies[]; 
+  Cheese cheese; 
+  Pepperoni pepperoni; 
+  Clams clam;
+
+  abstract void prepare(); // now is abstract
+
+  void bake() { // didn't change 
+    System.out.println("Bake for 25 minutes at 350"); 
+  }
+
+  void cut() { // didn't change 
+    System.out.println("Cutting the pizza into diagonal slices"); 
+  }
+
+  void box() { // didn't change 
+    System.out.println("Place pizza in official PizzaStore box"); 
+  }
+
+  void setName(String name) { // didn't change 
+    this.name = name; 
+  }
+
+  String getName() { // didn't change 
+    return name; 
+  }
+
+  public String toString() { // didn't change 
+    // code to print pizza here 
+  }
+}
+```
+
+The CheesePizza class:
+```java
+public class CheesePizza extends Pizza { 
+  PizzaIngredientFactory ingredientFactory;
+
+  public CheesePizza(PizzaIngredientFactory ingredientFactory) { // let the factory to provide ingredients
+    this.ingredientFactory = ingredientFactory; 
+  }
+
+  void prepare() { 
+    System.out.println("Preparing " + name); 
+    dough = ingredientFactory.createDough(); 
+    sauce = ingredientFactory.createSauce(); 
+    cheese = ingredientFactory.createCheese(); 
+  }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
