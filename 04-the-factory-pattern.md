@@ -337,25 +337,68 @@ public class CheesePizza extends Pizza {
 }
 ```
 
+The Pizza code uses the factory it has been composed with, to produce the ingredients used in the pizza. The ingredients produced depend on which factory we're using. The Pizza class doesn't care; it knows how to make pizzas. Now, it's decoupled from the differences in regional ingredients, and can be easily reused when there are factories for the Austin, the Nashville, and beyond.
 
+The ClamPizza class:
+```java
+public class ClamPizza extends Pizza { 
+  PizzaIngredientFactory ingredientFactory;
 
+  public ClamPizza(PizzaIngredientFactory ingredientFactory) { 
+    this.ingredientFactory = ingredientFactory; 
+  }
 
+  void prepare() {
+    System.out.println("Preparing " + name); 
+    dough = ingredientFactory.createDough(); 
+    sauce = ingredientFactory.createSauce(); 
+    cheese = ingredientFactory.createCheese(); 
+    clam = ingredientFactory.createClam();
+  }
+}
+```
 
+Updated concrete PizzaStore class:
+```java
+public class NYPizzaStore extends PizzaStore {
 
+  protected Pizza createPizza(String item) { 
+    Pizza pizza = null; 
+    PizzaIngredientFactory ingredientFactory = new NYPizzaIngredientFactory(); 
 
+    if (item.equals("cheese")) { 
+      pizza = new CheesePizza(ingredientFactory); 
+      pizza.setName("New York Style Cheese Pizza"); 
+    } else if (item.equals("veggie")) { 
+      pizza = new VeggiePizza(ingredientFactory); 
+      pizza.setName("New York Style Veggie Pizza"); 
+    } else if (item.equals("clam")) { 
+      pizza = new ClamPizza(ingredientFactory); 
+      pizza.setName("New York Style Clam Pizza"); 
+    } else if (item.equals("pepperoni")) { 
+      pizza = new PepperoniPizza(ingredientFactory); 
+      pizza.setName("New York Style Pepperoni Pizza"); 
+    } 
+    return pizza;
+  }
 
+}
+```
 
+Hence, we provided a way of creating a family of ingredients for pizzas, by introducing a new type of factory, called an Abstract Factory.
 
+An Abstract Factory gives us an interface for creating a family of products. By writing code that uses this interface, we decouple our code from the actual factory that creates the products. That allows us to implement a variety of factories that produce products meant for different contexts, such as different regions, different operating systems, or different look and feels.
 
+From the abstract factory, we derive one or more concrete factories that produce the same products, but with different implementations. We then write our code so that it uses the factory to create products. By passing in a variety of factories, we get a variety of implementations of those products. But our client code stays the same.
 
+## Summary
+The Abstract Factory Pattern provides an interface for creating families of related or dependent objects, without specifying their concrete classes.
 
+The Abstract Factory allows a client to use an abstract interface to create a set of related products, without knowing about the concrete products that are actually produced. In this way, the client is decoupled from any of the specifics of the concrete products. 
 
+The factory method creates objects via inheritance - to create objects using Factory Method, you need to extend a class, and provide an implementation for a factory method. The abstract factory method creates objects via object composition - it provides an abstract type for creating a family of products.
 
-
-
-
-
-
+Methods to create concrete products in an Abstract Factory are often implemented with a Factory Method. 
 
 
 
