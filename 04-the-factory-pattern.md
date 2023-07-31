@@ -399,15 +399,3 @@ The Abstract Factory allows a client to use an abstract interface to create a se
 The factory method creates objects via inheritance - to create objects using Factory Method, you need to extend a class, and provide an implementation for a factory method. The abstract factory method creates objects via object composition - it provides an abstract type for creating a family of products.
 
 Methods to create concrete products in an Abstract Factory are often implemented with a Factory Method. 
-
-
-
-
-
-
-
-
-
-
-
-
