@@ -1,0 +1,42 @@
+# 5. The Singleton Pattern
+The Singleton Pattern is a convention, for ensuring one and only one object is instantiated, for a given class.
+
+There are many objects we only need one of: thread pools, caches, dialog boxes, objects that handle preferences and registry settings, objects used for logging, and objects that act as device drivers to devices like printers and graphics cards. In fact, for many of these types of objects, if we were to instantiate more than one, we'd run into all sorts of problems, like incorrect program behavior, overuse of resources, or inconsistent results.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
