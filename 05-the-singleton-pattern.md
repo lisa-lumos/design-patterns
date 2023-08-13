@@ -78,12 +78,33 @@ The problem with the first draft of the Singleton class, is that it cannot handl
 
 To solve the problem, we can add `synchronized` keyword to this getInstance() method, but synchronization is expensive. The only time synchronization is relevant, is the first time through this method. In other words, once we've set the uniqueInstance variable to an instance of Singleton, we have no further need to synchronize this method. 
 
+Ways to solve the problem:
+1. Do nothing, if its performance isn't critical. Synchronizing a method can decrease performance by a factor of 100, so if a high-traffic part of your code begins using getInstance(), you may have to reconsider.
+2. Eagerly create the instance, rather than lazily. Using this approach, we rely on the JVM to create the unique instance of the Singleton, when the class is loaded. The JVM guarantees that the instance will be created, before any thread accesses the static uniqueInstance variable.
+3. Use "double-checked locking" to reduce the use of synchronization in getInstance(). First check to see if an instance is created, and if not, synchronize. This way, we only synchronize the first time through. Code as shown below. 
+```java
+public class Singleton { 
+  // The volatile keyword ensures that 
+  // multiple threads handle the uniqueInstance variable correctly, 
+  // when it is being initialized to the Singleton instance.
+  private volatile static Singleton uniqueInstance;
 
+  private Singleton() {}
 
+  public static Singleton getInstance() {
+    if (uniqueInstance == null) { // if no instance exists, enter synchronized block
+      synchronized (Singleton.class) { 
+        if (uniqueInstance == null) { 
+          uniqueInstance = new Singleton(); 
+        } 
+      }
+    } 
+    return uniqueInstance;
+  }
+}
+```
 
-
-
-
+Technically, instead of singleton, you can just create a class in which all methods and variables are defined as static, if your class is self-contained, and doesn't depend on complex initialization. However, because of the way static initializations are handled in Java, this can get very messy, especially if multiple classes are involved. Often this scenario can result in subtle, hard-to-find bugs involving order of initialization. Unless there is a compelling need to do it, it's far better to stay in the object world.
 
 
 
