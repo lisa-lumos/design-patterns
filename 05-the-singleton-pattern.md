@@ -106,17 +106,25 @@ public class Singleton {
 
 Technically, instead of singleton, you can just create a class in which all methods and variables are defined as static, if your class is self-contained, and doesn't depend on complex initialization. However, because of the way static initializations are handled in Java, this can get very messy, especially if multiple classes are involved. Often this scenario can result in subtle, hard-to-find bugs involving order of initialization. Unless there is a compelling need to do it, it's far better to stay in the object world.
 
+A common criticism of the Singleton Pattern. The loose coupling principle says to "strive for loosely coupled designs between objects that interact". It's easy for Singletons to violate this principle: if you make a change to the Singleton, you'll likely have to make a change to every object connected to it.
 
+Singletons are meant to be used sparingly.
 
+Many of the problems we've discussed - worrying about synchronization, class loading issues, reflection, and serialization/ deserialization issues - can all be solved by using an enum to create your Singleton:
+```java
+public enum Singleton { 
+  UNIQUE_INSTANCE; 
+  // more useful fields here 
+} 
 
+public class SingletonClient {
+  public static void main(String[] args) { 
+    Singleton singleton = Singleton.UNIQUE_INSTANCE; 
+    // use the singleton here
+  } 
+}
+```
 
+We went through all that earlier work, with creating a Singleton class, with a getInstance() method, and then synchronizing, etc, so you truly understand how Singleton works. Now that you know, you can go off and use enum, whenever you need a Singleton.
 
-
-
-
-
-
-
-
-
-
+Be careful if you are using multiple class loaders; this could defeat the Singleton implementation and result in multiple instances.
