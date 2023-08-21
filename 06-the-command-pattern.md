@@ -1,0 +1,57 @@
+# 6. The command pattern
+Encapsulate method invocation.
+
+Assume you need to design the API for programming the remote control of home devices, such as fan, light, etc. The remote control features 7 programmable slots, with on/off button for each slot/device. And there is also a global undo button. We need to control all of the current devices, also and future devices. There are many different devices to control, and very different interfaces across these devices (not just on and off, but also dim, setTemperature, setVolume, ect). 
+
+The Command Pattern allows you to decouple the requester of an action, from the object that actually performs the action. A command object encapsulates a request to do something (turn on a light) on a specific object (the living room light object). So, if we store a command object for each button, when the button is pressed we ask the command object to do some work. The remote doesn't have any idea what the work is, it just has a command object, that knows how to talk to the right object to get the work done.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
