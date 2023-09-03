@@ -98,9 +98,31 @@ public class RemoteControl {
 }
 ```
 
-The LightOffCommand:
+The LightOffCommand, and the StereoOnWithCDCommand:
 ```java
+public class LightOffCommand implements Command { 
+  Light light;
 
+  public LightOffCommand(Light light) { 
+    this.light = light; 
+  }
+
+  public void execute() { 
+    light.off(); 
+  }
+}
+
+public class StereoOnWithCDCommand implements Command { 
+  Stereo stereo;
+
+  public StereoOnWithCDCommand(Stereo stereo) { 
+    this.stereo = stereo; 
+  }
+
+  public void execute() { 
+    stereo.on(); stereo.setCD(); stereo.setVolume(11); 
+  }
+}
 ```
 
 
