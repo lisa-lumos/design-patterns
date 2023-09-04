@@ -178,9 +178,78 @@ public class NoCommand implements Command { // it does nothing
 
 Note that the NoCommand object is an example of a null object. A null object is useful, when you don't have a meaningful object to return, and yet you want to remove the responsibility for handling null from the client. For instance, in our remote control, we didn't have a meaningful object to assign to each slot out of the box, so we provided a NoCommand object, that acts as a surrogate, and does nothing when its execute() method is called. You'll find uses for Null Objects in conjunction with many Design Patterns, and sometimes, you'll even see "Null Object" listed as a Design Pattern.
 
+To have the "undo" functionality, the LightOnCommand/LightOffCommand can look like this:
+```java
+public class LightOnCommand implements Command { 
+  Light light;
+  public LightOnCommand(Light light) { 
+    this.light = light; 
+  }
+  public void execute() { 
+    light.on(); 
+  }
+  public void undo() { 
+    light.off(); 
+  }
+}
 
+public class LightOffCommand implements Command { 
+  Light light;
+  public LightOffCommand(Light light) { 
+    this.light = light; 
+  }
+  public void execute() { 
+    light.off(); 
+  }
+  public void undo() { 
+    light.on(); 
+  }
+}
+```
 
+And the RemoteControlWithUndo class:
+```java
+public class RemoteControlWithUndo { 
+  Command[] onCommands; 
+  Command[] offCommands; 
+  Command undoCommand;
 
+  public RemoteControlWithUndo() {
+    onCommands = new Command[7]; 
+    offCommands = new Command[7];
+
+    Command noCommand = new NoCommand(); 
+    for(int i = 0; i < 7; i++) { 
+      onCommands[i] = noCommand; 
+      offCommands[i] = noCommand; 
+    } 
+    undoCommand = noCommand;
+  }
+
+  public void setCommand(int slot, Command onCommand, Command offCommand) { 
+    onCommands[slot] = onCommand; 
+    offCommands[slot] = offCommand; 
+  }
+
+  public void onButtonWasPushed(int slot) { 
+    onCommands[slot].execute(); 
+    undoCommand = onCommands[slot]; // the undo command is updated to be same with the corresponding command, each time a on/off button was pushed
+  }
+
+  public void offButtonWasPushed(int slot) { 
+    offCommands[slot].execute(); 
+    undoCommand = offCommands[slot]; // the undo command is updated to be same with the corresponding command, each time a on/off button was pushed
+  }
+
+  public void undoButtonWasPushed() { 
+    undoCommand.undo(); 
+  }
+
+  public String toString() { 
+    // toString code here... 
+  }
+}
+```
 
 
 
