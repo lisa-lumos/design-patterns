@@ -125,17 +125,58 @@ public class StereoOnWithCDCommand implements Command {
 }
 ```
 
+The RemoteLoader class:
+```java
+public class RemoteLoader {
+  public static void main(String[] args) { 
+    RemoteControl remoteControl = new RemoteControl();
 
+    Light livingRoomLight = new Light("Living Room"); 
+    Light kitchenLight = new Light("Kitchen"); 
+    CeilingFan ceilingFan = new CeilingFan("Living Room"); 
+    GarageDoor garageDoor = new GarageDoor("Garage"); 
+    Stereo stereo = new Stereo("Living Room");
 
+    // LightOnCommand livingRoomLightOn = new LightOnCommand(livingRoomLight); 
+    // LightOffCommand livingRoomLightOff = new LightOffCommand(livingRoomLight); 
+    remoteControl.setCommand(0, () -> livingRoomLight.on(), // use Java's lambda expressions
+                                () -> livingRoomLight.off());
+    LightOnCommand kitchenLightOn = new LightOnCommand(kitchenLight); 
+    LightOffCommand kitchenLightOff = new LightOffCommand(kitchenLight);
+    CeilingFanOnCommand ceilingFanOn = new CeilingFanOnCommand(ceilingFan); 
+    CeilingFanOffCommand ceilingFanOff = new CeilingFanOffCommand(ceilingFan);
+    GarageDoorUpCommand garageDoorUp = new GarageDoorUpCommand(garageDoor); 
+    GarageDoorDownCommand garageDoorDown = new GarageDoorDownCommand(garageDoor);
+    StereoOnWithCDCommand stereoOnWithCD = new StereoOnWithCDCommand(stereo); 
+    StereoOffCommand stereoOff = new StereoOffCommand(stereo);
 
+    // remoteControl.setCommand(0, livingRoomLightOn, livingRoomLightOff); 
+    remoteControl.setCommand(1, kitchenLightOn, kitchenLightOff); 
+    remoteControl.setCommand(2, ceilingFanOn, ceilingFanOff); 
+    remoteControl.setCommand(3, stereoOnWithCD, stereoOff);
 
+    System.out.println(remoteControl);
 
+    remoteControl.onButtonWasPushed(0); 
+    remoteControl.offButtonWasPushed(0); 
+    remoteControl.onButtonWasPushed(1); 
+    remoteControl.offButtonWasPushed(1); 
+    remoteControl.onButtonWasPushed(2); 
+    remoteControl.offButtonWasPushed(2); 
+    remoteControl.onButtonWasPushed(3); 
+    remoteControl.offButtonWasPushed(3);
+  }
+}
+```
 
+And the NoCommand object:
+```java
+public class NoCommand implements Command { // it does nothing
+  public void execute() { } 
+}
+```
 
-
-
-
-
+Note that the NoCommand object is an example of a null object. A null object is useful, when you don't have a meaningful object to return, and yet you want to remove the responsibility for handling null from the client. For instance, in our remote control, we didn't have a meaningful object to assign to each slot out of the box, so we provided a NoCommand object, that acts as a surrogate, and does nothing when its execute() method is called. You'll find uses for Null Objects in conjunction with many Design Patterns, and sometimes, you'll even see "Null Object" listed as a Design Pattern.
 
 
 
