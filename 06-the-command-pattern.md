@@ -251,12 +251,91 @@ public class RemoteControlWithUndo {
 }
 ```
 
+Implementing undo for the CeilingFan, in the CeilingFanHighCommand:
+```java
+public class CeilingFan {
+  public static final int HIGH = 3; 
+  public static final int MEDIUM = 2; 
+  public static final int LOW = 1; 
+  public static final int OFF = 0; 
+  String location; 
+  int speed; // this is its local state
 
+  public CeilingFan(String location) {
+    this.location = location;
+    pseed = OFF; 
+  }
 
+  public void high() { 
+    speed = HIGH; 
+    // code to set fan to high 
+  }
 
+  public void medium() { 
+    speed = MEDIUM; 
+    // code to set fan to medium 
+  }
 
+  public void low() { 
+    speed = LOW; 
+    // code to set fan to low 
+  }
 
+  public void off() { 
+    speed = OFF; 
+    // code to turn fan off 
+  }
 
+  public int getSpeed() { 
+    return speed; 
+  }
+}
+
+public class CeilingFanHighCommand implements Command { 
+  CeilingFan ceilingFan; 
+  int prevSpeed; // track the prv state
+
+  public CeilingFanHighCommand(CeilingFan ceilingFan) { 
+    this.ceilingFan = ceilingFan; 
+  }
+
+  public void execute() { 
+    prevSpeed = ceilingFan.getSpeed(); // record the prv state
+    ceilingFan.high(); 
+  }
+
+  public void undo() {
+    if (prevSpeed == CeilingFan.HIGH) { 
+      ceilingFan.high(); 
+    } else if (prevSpeed == CeilingFan.MEDIUM) {
+      ceilingFan.medium(); 
+    } else if (prevSpeed == CeilingFan.LOW) {
+      ceilingFan.low(); 
+    } else if (prevSpeed == CeilingFan.OFF) {
+      ceilingFan.off(); 
+    }
+  }
+}
+```
+
+Having one button to do many things at once: 
+```java
+public class MacroCommand implements Command { 
+  Command[] commands;
+
+  public MacroCommand(Command[] commands) { 
+    this.commands = commands; 
+  }
+
+  public void execute() {
+    for (int i = 0; i < commands.length; i++) { 
+      commands[i].execute(); 
+    } 
+  }
+}
+```
+
+To implement a history of undo operations, for example, to be able to press the undo button multiple times, we can keep a stack of previous commands. Then, whenever undo is pressed, your invoker pops the first item off the stack and calls its undo() method.
 
 
 
