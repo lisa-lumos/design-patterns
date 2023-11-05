@@ -96,9 +96,9 @@ The Adapter Pattern converts the interface of a class into another interface the
 
 This pattern acts to decouple the client from the implemented interface, and if we expect the interface to change over time, the adapter encapsulates that change, so that the client doesn't have to be modified each time it needs to operate against a different interface.
 
+There are 2 kinds of adapters: object adapters, and class adapters.
 
-
-
+To implement a class adapter, you need multiple inheritance to implement it, so it is impossible in Java.
 
 
 
