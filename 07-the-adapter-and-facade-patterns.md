@@ -1,4 +1,5 @@
 # 7. The Adapter and Facade Patterns
+## The Adapter Pattern
 OO adapters take an interface, and adapt it to one that a client is expecting.
 
 Say you've got an existing software system that you need to work a new vendor class library into, but the new vendor designed their interfaces differently than the last vendor. You don't want to solve the problem by changing your existing code, and you can't change the vendor's code. So, you can write a class that adapts the new vendor interface into the one you're expecting. The adapter acts as the middleman, by receiving requests from the client, and converting them into requests that make sense on the vendor classes.
@@ -100,8 +101,10 @@ There are 2 kinds of adapters: object adapters, and class adapters.
 
 To implement a class adapter, you need multiple inheritance to implement it, so it is impossible in Java.
 
+the Adapter Pattern converts the interface of a class into one that a client is expecting. We achieve this in Java, by wrapping the object that has an incompatible interface with an object that implements the correct one.
 
-
+## The Facade Pattern
+The Facade Pattern makes an interface simpler. 
 
 
 
