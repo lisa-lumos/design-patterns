@@ -106,9 +106,9 @@ the Adapter Pattern converts the interface of a class into one that a client is 
 ## The Facade Pattern
 The Facade Pattern makes an interface simpler. 
 
+With the Facade Pattern, you can take a complex subsystem, and make it easier to use, by implementing a Facade class ,that provides one, more reasonable interface. If you need the power of the complex subsystem, it's still there for you to use, but if all you need is a straightforward interface, the Facade is there for you.
 
-
-
+The Facade Pattern also allows you to decouple your client implementation from any one subsystem. Assume you decide to upgrade your home theater to all new components that have different interfaces. If you coded your client to the facade, rather than the subsystem, your client code doesn't need to change, just the facade.
 
 
 
