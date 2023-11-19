@@ -110,12 +110,83 @@ With the Facade Pattern, you can take a complex subsystem, and make it easier to
 
 The Facade Pattern also allows you to decouple your client implementation from any one subsystem. Assume you decide to upgrade your home theater to all new components that have different interfaces. If you coded your client to the facade, rather than the subsystem, your client code doesn't need to change, just the facade.
 
+```java
+public class HomeTheaterFacade { 
+  // the composition
+  Amplifier amp; 
+  Tuner tuner; 
+  StreamingPlayer player; 
+  Projector projector; 
+  TheaterLights lights; 
+  Screen screen; 
+  PopcornPopper popper;
 
+  public HomeTheaterFacade(
+      Amplifier amp, Tuner tuner, 
+      StreamingPlayer player; 
+      Projector projector, 
+      Screen screen, TheaterLights lights, 
+      PopcornPopper popper ) {
+    this.amp = amp; 
+    this.tuner = tuner; 
+    this.player = player; 
+    this.projector = projector; 
+    this.screen = screen; 
+    this.lights = lights; 
+    this.popper = popper;
+  }
 
+  // other methods here
+  public void watchMovie(String movie) { // this method does all relevant work
+    System.out.println("Get ready to watch a movie..."); 
+    popper.on(); popper.pop(); 
+    lights.dim(10); screen.down(); 
+    projector.on(); projector.wideScreenMode(); 
+    amp.on(); amp.setStreamingPlayer(player); amp.setSurroundSound(); amp.setVolume(5); 
+    player.on(); player.play(movie);
+  }
 
+  public void endMovie() {
+    System.out.println("Shutting movie theater down..."); 
+    popper.off(); lights.on(); screen.up(); projector.off(); 
+    amp.off(); player.stop(); player.off();
+  }
+}
 
+public class HomeTheaterTestDrive {
+  public static void main(String[] args) { 
+    // instantiate components here
+    HomeTheaterFacade homeTheater = new HomeTheaterFacade(amp, tuner, player, projector, screen, lights, popper);
+    homeTheater.watchMovie("Raiders of the Lost Ark"); 
+    homeTheater.endMovie();
+  }
+}
+```
 
+Definition: The Facade Pattern provides a unified interface to a set of interfaces in a subsystem. Facade defines a higher-level interface that makes the subsystem easier to use.
 
+To use the Facade Pattern, we create a class that simplifies/unifies a set of more complex classes, that belong to some subsystem. This pattern is fairly straightforward, but that doesn't make it any less powerful: it allows us to avoid tight coupling between clients and subsystems, and also helps us adhere to a new object-oriented principle: The principle of least knowledge. 
 
+Design Principle: Principle of Least Knowledge (also called Law of Demeter): talk only to your immediate friends. It means, when you are designing a system, for any object, be careful of the number of classes it interacts with, and also how it comes to interact with those classes.
 
+This principle prevents us from creating designs that have a large number of classes coupled together, so that changes in one part of the system cascade to other parts. When you build a lot of dependencies between many classes, you are building a fragile system that will be costly to maintain, and complex for others to understand.
 
+The principle provides some guidelines: from any method in an object, invoke only methods that belong to:
+- The object itself, and its components
+- Objects passed in as a parameter, to this method
+- Any object this method creates or instantiates
+
+For example:
+```java
+// without the principle
+public float getTemp() { 
+  Thermometer thermometer = station.getThermometer(); 
+  return thermometer.getTemperature(); 
+}
+
+// with the principle
+// this reduces the number of classes we depend on
+public float getTemp() { 
+  return station.getTemperature(); 
+}
+```
