@@ -139,18 +139,3 @@ The Hollywood Principle: Don't call us, we'll call you.
 The Hollywood Principle gives us a way to prevent "dependency rot". Dependency rot happens when you have high-level components (such as abstract classes) depending on low-level components (such as concrete classes) depending on high-level components depending on sideways components depending on low-level components, and so on. When rot sets in, no one can easily understand the way a system is designed. With the Hollywood Principle, we allow low-level components to hook themselves into a system, but the high-level components determine when they are needed, and how. In other words, the high-level components give the low-level components the "don't call us, we'll call you" treatment.
 
 When we design with the Template Method Pattern, we're telling subclasses, "don't call us, we'll call you". Tea and Coffee concrete classes are used simply to provide implementation details, they never call the abstract class directly without being "called" first. The high-level abstract component calls on the subclasses only, when they are needed for an implementation of a method. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
