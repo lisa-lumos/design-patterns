@@ -267,7 +267,7 @@ public class Waitress {
 
 Design Principle: A class should have only one reason to change.
 
-We know we want to avoid change in our classes because modifying code provides all sorts of opportunities for problems to creep in. Having two ways to change increases the probability the class will change in the future, and when it does, it's going to affect two aspects of your design.
+We know we want to avoid change in our classes, because modifying code provides all sorts of opportunities for problems to creep in. Having two ways to change increases the probability the class will change in the future, and when it does, it's going to affect two aspects of your design.
 
 
 
