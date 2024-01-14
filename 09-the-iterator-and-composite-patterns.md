@@ -196,14 +196,78 @@ public class Waitress {
 
 ```
 
+Next, we can clean up the code using java.util.Iterator:
+```java
+public Iterator<MenuItem> createIterator() {
+  return menuItems.iterator();
+}
 
+import java.util.Iterator;
+public class DinerMenuIterator implements Iterator<MenuItem> { 
+  MenuItem[] items; 
+  int position = 0;
 
+  public DinerMenuIterator(MenuItem[] items) { 
+    this.items = items; 
+  }
 
+  public MenuItem next() { 
+    //implementation here 
+  }
 
+  public boolean hasNext() { 
+    //implementation here 
+  }
 
+  public void remove() {
+    throw new UnsupportedOperationException (
+      "You shouldn't be trying to remove menu items."
+    );
+  }
+}
 
+public interface Menu {
+  public Iterator<MenuItem> createIterator();
+}
 
+import java.util.Iterator;
+public class Waitress {
+  Menu pancakeHouseMenu; 
+  Menu dinerMenu;
 
+  public Waitress(Menu pancakeHouseMenu, Menu dinerMenu) { 
+    this.pancakeHouseMenu = pancakeHouseMenu; 
+    this.dinerMenu = dinerMenu; 
+  }
+
+  public void printMenu() {
+    Iterator<MenuItem> pancakeIterator = pancakeHouseMenu.createIterator(); 
+    Iterator<MenuItem> dinerIterator = dinerMenu.createIterator(); 
+    System.out.println("MENU\n----\nBREAKFAST"); 
+    printMenu(pancakeIterator); 
+    System.out.println("\nLUNCH"); 
+    printMenu(dinerIterator);
+  }
+
+  private void printMenu(Iterator iterator) { 
+    while (iterator.hasNext()) { 
+      MenuItem menuItem = iterator.next(); 
+      System.out.print(menuItem.getName() + ", "); 
+      System.out.print(menuItem.getPrice() + " -- "); 
+      System.out.println(menuItem.getDescription()); 
+    }
+  }
+
+  // other methods here
+}
+
+```
+
+**The Iterator Pattern** provides a way to access the elements of an aggregate object sequentially, without exposing its underlying representation.
+
+Design Principle: A class should have only one reason to change.
+
+We know we want to avoid change in our classes because modifying code provides all sorts of opportunities for problems to creep in. Having two ways to change increases the probability the class will change in the future, and when it does, it's going to affect two aspects of your design.
 
 
 
