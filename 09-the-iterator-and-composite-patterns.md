@@ -269,6 +269,82 @@ Design Principle: A class should have only one reason to change.
 
 We know we want to avoid change in our classes, because modifying code provides all sorts of opportunities for problems to creep in. Having two ways to change increases the probability the class will change in the future, and when it does, it's going to affect two aspects of your design.
 
+```java
+// reworked CafeMenu code
+public class CafeMenu implements Menu {
+  Map<String, MenuItem> menuItems = new HashMap<String, MenuItem>();
+
+  public CafeMenu() { 
+    // constructor code here 
+  }
+
+  public void addItem(String name, String description, boolean vegetarian, double price) {
+    MenuItem menuItem = new MenuItem(name, description, vegetarian, price); 
+    menuItems.put(name, menuItem); 
+  }
+
+  public Map<String, MenuItem> getMenuItems() { 
+    return menuItems; 
+  }
+
+  public Iterator<MenuItem> createIterator() { 
+    return menuItems.values().iterator(); 
+  }
+}
+
+// updated Waitress class
+public class Waitress {
+  Menu pancakeHouseMenu; 
+  Menu dinerMenu; 
+  Menu cafeMenu;
+
+  public Waitress(Menu pancakeHouseMenu, Menu dinerMenu, Menu cafeMenu) {
+    this.pancakeHouseMenu = pancakeHouseMenu; 
+    this.dinerMenu = dinerMenu; 
+    this.cafeMenu = cafeMenu; 
+  }
+
+  public void printMenu() { 
+    Iterator<MenuItem> pancakeIterator = pancakeHouseMenu.createIterator(); 
+    Iterator<MenuItem> dinerIterator = dinerMenu.createIterator(); 
+    Iterator<MenuItem> cafeIterator = cafeMenu.createIterator();
+
+    System.out.println("MENU\n----\nBREAKFAST"); 
+    printMenu(pancakeIterator); 
+    System.out.println("\nLUNCH"); 
+    printMenu(dinerIterator); 
+    System.out.println("\nDINNER"); 
+    printMenu(cafeIterator);
+  }
+
+  private void printMenu(Iterator iterator) {
+    while (iterator.hasNext()) { 
+      MenuItem menuItem = iterator.next(); 
+      System.out.print(menuItem.getName() + ", "); 
+      System.out.print(menuItem.getPrice() + " -- "); 
+      System.out.println(menuItem.getDescription());
+    }
+  }
+}
+
+public class MenuTestDrive {
+  public static void main(String args[]) { 
+    PancakeHouseMenu pancakeHouseMenu = new PancakeHouseMenu(); 
+    DinerMenu dinerMenu = new DinerMenu(); 
+    CafeMenu cafeMenu = new CafeMenu();
+    Waitress waitress = new Waitress(pancakeHouseMenu, dinerMenu, cafeMenu);
+    waitress.printMenu();
+  }
+}
+```
+
+By giving the waitress an Iterator, we have decoupled it from the implementation of the menu items, so we can easily add new menus if needed. 
+
+However, every time we add a new menu, we have to open up the Waitress implementation, and add more code.
+
+
+
+
 
 
 
