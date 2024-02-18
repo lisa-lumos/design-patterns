@@ -342,6 +342,34 @@ By giving the waitress an Iterator, we have decoupled it from the implementation
 
 However, every time we add a new menu, we have to open up the Waitress implementation, and add more code.
 
+## The Composite Pattern
+Assume, there could be not only multiple menus, but also menus within menus. 
+
+The new needs:
+- We need some kind of a tree-shaped structure, that will accommodate menus, submenus, and menu items. 
+- We need to make sure we maintain a way to traverse the items in each menu, that is at least as convenient as what we're doing now with iterators. 
+- We may need to traverse the items in a more flexible manner. For instance, we might need to iterate over only the dessert menu, or iterate over the entire menu, including the dessert submenu. 
+
+The Composite Pattern allows you to compose objects into tree structures, to represent part-whole hierarchies. Composite lets clients treat individual objects and compositions of objects uniformly.
+
+The Composite Pattern allows us to build structures of objects in the form of trees, that contain both compositions of objects, and individual objects as nodes.
+
+Using a composite structure, we can apply the same operations over both composites and individual objects. In other words, in most cases we can ignore the differences between compositions of objects and individual objects.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
